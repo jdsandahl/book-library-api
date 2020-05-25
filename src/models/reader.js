@@ -4,5 +4,5 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
   };
 
-  return sequelize.define("Reader", schema);
+  return sequelize.define('Reader', schema);
 };
