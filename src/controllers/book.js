@@ -3,7 +3,13 @@ const { Book } = require('../models');
 
 const getBooks = (_, res) => {};
 
-const createBooks = (req, res) => {};
+const createBooks = (req, res) => {
+  const newBook = req.body;
+
+  Book.create(newBook).then((newBookCreated) => {
+    res.status(201).json(newBookCreated);
+  });
+};
 
 const getBookById = (req, res) => {};
 
