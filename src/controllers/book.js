@@ -42,7 +42,19 @@ const updateBooks = (req, res) => {
   });
 };
 
-const deleteBooks = (req, res) => {};
+const deleteBooks = (req, res) => {
+  const { id } = req.params;
+
+  Book.findByPk(id).then((foundBook) => {
+    if (!foundBook) {
+      res.status(404).json({ error: 'The book could not be found.' });
+    } else {
+      Book.destroy({ where: { id } }).then(() => {
+        res.status(204).send();
+      });
+    }
+  });
+};
 
 module.exports = {
   getBooks,

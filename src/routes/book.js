@@ -13,6 +13,6 @@ router
   .route('/:id')
   .get(bookController.getBookById)
   .patch(bookController.updateBooks)
-  .delete(bookController.createBooks);
+  .delete(bookController.deleteBooks);
 
 module.exports = router;  
