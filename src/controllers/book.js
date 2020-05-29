@@ -1,7 +1,11 @@
 /* /src/controllers/book */
 const { Book } = require('../models');
 
-const getBooks = (_, res) => {};
+const getBooks = (_, res) => {
+    Book.findAll().then((books) => {
+        res.status(200).json(books);
+    });
+};
 
 const createBooks = (req, res) => {
   const newBook = req.body;
