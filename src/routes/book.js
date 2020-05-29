@@ -12,9 +12,7 @@ router
 router
   .route('/:id')
   .get(bookController.getBookById)
-  .patch(bookController.getBooks)
+  .patch(bookController.updateBooks)
   .delete(bookController.createBooks);
 
 module.exports = router;  
-
-

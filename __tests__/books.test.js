@@ -88,10 +88,32 @@ describe('/books', () => {
       });
 
       it('returns a 404 error if the book does not exist', async () => {
-        const response = await request(app).get('/books/asdf');
+        const response = await request(app).get('/books/9999');
 
         expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('The book could not be found.');        
+        expect(response.body.error).to.equal('The book could not be found.');
+      });
+    });
+
+    describe('PATCH /books/:id', () => {
+      it('updates books title by id', async () => {
+        const book = books[0];
+        const response = await request(app)
+          .patch(`/books/${book.id}`)
+          .send({ title: 'The 1st Book' });
+        const updatedBookRecord = await Book.findByPk(book.id, { raw: true, });
+
+        expect(response.status).to.equal(200);
+        expect(updatedBookRecord.title).to.equal('The 1st Book');
+      });
+
+      it('returns a 404 if the book does not exist', async () => {
+        const response = await request(app)
+          .patch('/books/9999')
+          .send({ title: 'The 1st Book' });
+
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The book could not be found.');
       });
     });
   });
