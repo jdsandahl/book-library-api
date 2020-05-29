@@ -9,9 +9,9 @@ const getReaders = (_, res) => {
 const createReader = (req, res) => {
   const newReader = req.body;
 
-  Reader.create(newReader).then((newReaderCreated) =>
-    res.status(201).json(newReaderCreated)
-  );
+  Reader.create(newReader).then((newReaderCreated) => {
+    res.status(201).json(newReaderCreated);
+  });
 };
 
 const updateReader = (req, res) => {
