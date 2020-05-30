@@ -26,6 +26,20 @@ describe('/readers', () => {
         expect(newReaderRecord.password).to.equal('password');
       });
     });
+
+    it('sends a 400 error if name is an empty string', async () => {
+      const response = await request(app).post('/readers').send({
+        name: '',
+        email: 'missingName@test.com',
+        password: 'password',
+      });
+      const newReaderRecord = await Reader.findByPk(response.body.id, { raw: true, });
+
+      expect(response.status).to.equal(400);
+      expect(response.body.errors.length).to.equal(1);
+      console.log('Test Error:', response.body.errors);
+      expect(newReaderRecord).to.equal(null);
+    });
   });
 
   describe('with records in the database', () => {
