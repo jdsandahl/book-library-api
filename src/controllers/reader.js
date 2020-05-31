@@ -1,10 +1,13 @@
 const { Reader } = require('../models');
+const { getAllItems } = require('./helpers');
 
-const getReaders = (_, res) => {
+/*const getReaders = (_, res) => {
   Reader.findAll().then((readers) => {
     res.status(200).json(readers);
   });
-};
+};*/
+
+const getReaders = (_, res) => getAllItems(res, 'reader');
 
 const createReader = (req, res) => {
   const newReader = req.body;
