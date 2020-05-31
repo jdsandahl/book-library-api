@@ -37,7 +37,28 @@ describe('/readers', () => {
 
       expect(response.status).to.equal(400);
       expect(response.body.errors.length).to.equal(1);
-      console.log('Test Error:', response.body.errors);
+      expect(newReaderRecord).to.equal(null);
+    });
+
+    it('sends a 400 error if fields are not provided', async () => {
+      const response = await request(app).post('/readers').send({});
+      const newReaderRecord = await Reader.findByPk(response.body.id, { raw: true, });
+
+      expect(response.status).to.equal(400);
+      expect(response.body.errors.length).to.equal(3);
+      expect(newReaderRecord).to.equal(null);
+    });
+
+    it('sends a 400 error if email, or password in wrong format', async () => {
+      const response = await request(app).post('/readers').send({
+        name: 'Jon Snow',
+        email: 'ghostgot.com',
+        password: 'pass',
+      });
+      const newReaderRecord = await Reader.findByPk(response.body.id, { raw: true, });
+
+      expect(response.status).to.equal(400);
+      expect(response.body.errors.length).to.equal(2);
       expect(newReaderRecord).to.equal(null);
     });
   });
