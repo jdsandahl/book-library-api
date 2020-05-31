@@ -18,6 +18,20 @@ const getAllItems = (res, model) => {
   });
 };
 
+const createItem = (res, model, item) => {
+  const Model = getModel(model);
+
+  return Model.create(item)
+    .then((newItemCreated) => {
+      res.status(201).json(newItemCreated);
+    })
+    .catch((error) => {
+      const errorMessages = error.errors.map((e) => e.message);
+      res.status(400).json({ errors: errorMessages });
+    });
+};
+
 module.exports = {
   getAllItems,
+  createItem,
 };
