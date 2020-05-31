@@ -27,6 +27,20 @@ describe('/books', () => {
         expect(newBookRecord.isbn).to.equal('Test ISBN');
       });
     });
+
+    it('sends a 400 error if title, or author is an empty string', async () => {
+      const response = await request(app).post('/books').send({
+        title: '',
+        author: '',
+        genre: 'Fantasy',
+        isbn: '1231-1231',
+      });
+      const newBookRecord = await Book.findByPk(response.body.id, { raw: true });
+
+      expect(response.status).to.equal(400);
+      expect(response.body.errors.length).to.equal(2);
+      expect(newBookRecord).to.equal(null);
+    });
   });
 
   describe('with books in the database', () => {
