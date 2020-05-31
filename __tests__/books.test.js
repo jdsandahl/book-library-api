@@ -35,7 +35,23 @@ describe('/books', () => {
         genre: 'Fantasy',
         isbn: '1231-1231',
       });
-      const newBookRecord = await Book.findByPk(response.body.id, { raw: true });
+      const newBookRecord = await Book.findByPk(response.body.id, {
+        raw: true,
+      });
+
+      expect(response.status).to.equal(400);
+      expect(response.body.errors.length).to.equal(2);
+      expect(newBookRecord).to.equal(null);
+    });
+
+    it('sends a 400 error if title, or author are not provided', async () => {
+      const response = await request(app).post('/books').send({
+        genre: 'Fantasy',
+        isbn: '1231-1231',
+      });
+      const newBookRecord = await Book.findByPk(response.body.id, {
+        raw: true,
+      });
 
       expect(response.status).to.equal(400);
       expect(response.body.errors.length).to.equal(2);
