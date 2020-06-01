@@ -15,7 +15,7 @@ const getModel = (model) => {
 const getAllItems = (res, model) => {
   const Model = getModel(model);
 
-  return Model.findAll().then((items) => {
+  Model.findAll().then((items) => {
     res.status(200).json(items);
   });
 };
@@ -23,7 +23,7 @@ const getAllItems = (res, model) => {
 const createItem = (res, model, item) => {
   const Model = getModel(model);
 
-  return Model.create(item)
+  Model.create(item)
     .then((newItemCreated) => {
       res.status(201).json(newItemCreated);
     })
@@ -36,7 +36,7 @@ const createItem = (res, model, item) => {
 const updateItem = (res, model, item, id) => {
   const Model = getModel(model);
 
-  return Model.update(item, { where: { id } }).then(([fieldsUpdated]) => {
+  Model.update(item, { where: { id } }).then(([fieldsUpdated]) => {
     if (!fieldsUpdated) {
       res.status(404).json(get404Error(model));
     } else {
@@ -50,11 +50,25 @@ const updateItem = (res, model, item, id) => {
 const getItemById = (res, model, id) => {
   const Model = getModel(model);
 
-  return Model.findByPk(id).then((item) => {
+  Model.findByPk(id).then((item) => {
     if (!item) {
       res.status(404).json(get404Error(model));
     } else {
       res.status(200).json(item);
+    }
+  });
+};
+
+const deleteItem = (res, model, id) => {
+  const Model = getModel(model);
+
+  Model.findByPk(id).then((foundItem) => {
+    if (!foundItem) {
+      res.status(404).json(get404Error(model));
+    } else {
+      Model.destroy({ where: { id } }).then(() => {
+        res.status(204).send();
+      });
     }
   });
 };
@@ -64,4 +78,5 @@ module.exports = {
   createItem,
   updateItem,
   getItemById,
+  deleteItem,
 };

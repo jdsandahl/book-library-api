@@ -1,9 +1,9 @@
-const { Reader } = require('../models');
 const {
   getAllItems,
   createItem,
   updateItem,
   getItemById,
+  deleteItem,
 } = require('./helpers');
 
 const getReaders = (_, res) => getAllItems(res, 'reader');
@@ -14,19 +14,7 @@ const updateReader = (req, res) => updateItem(res, 'reader', req.body, req.param
 
 const getReaderById = (req, res) => getItemById(res, 'reader', req.params.id);
 
-const deleteReader = (req, res) => {
-  const { id } = req.params;
-
-  Reader.findByPk(id).then((foundReader) => {
-    if (!foundReader) {
-      res.status(404).json({ error: 'The reader could not be found.' });
-    } else {
-      Reader.destroy({ where: { id } }).then(() => {
-        res.status(204).send();
-      });
-    }
-  });
-};
+const deleteReader = (req, res) => deleteItem(res, 'reader', req.params.id);
 
 module.exports = {
   getReaders,
