@@ -10,6 +10,8 @@ const getModel = (model) => {
   return models[model];
 };
 
+// Helper functions to be exported
+
 const getAllItems = (res, model) => {
   const Model = getModel(model);
 
@@ -31,7 +33,22 @@ const createItem = (res, model, item) => {
     });
 };
 
+const updateItem = (res, model, item, id) => {
+  const Model = getModel(model);
+
+  return Model.update(item, { where: { id } }).then(([fieldsUpdated]) => {
+    if (!fieldsUpdated) {
+      res.status(404).json(get404Error(model));
+    } else {
+      Model.findByPk(id).then((updatedItem) => {
+        res.status(200).json(updatedItem);
+      });
+    }
+  });
+};
+
 module.exports = {
   getAllItems,
   createItem,
+  updateItem,
 };

@@ -1,24 +1,11 @@
 const { Reader } = require('../models');
-const { getAllItems, createItem } = require('./helpers');
+const { getAllItems, createItem, updateItem } = require('./helpers');
 
 const getReaders = (_, res) => getAllItems(res, 'reader');
 
 const createReader = (req, res) => createItem(res, 'reader', req.body);
 
-const updateReader = (req, res) => {
-  const { id } = req.params;
-  const newDetails = req.body;
-
-  Reader.update(newDetails, { where: { id } }).then(([recordsUpdated]) => {
-    if (!recordsUpdated) {
-      res.status(404).json({ error: 'The reader could not be found.' });
-    } else {
-      Reader.findByPk(id).then((updatedReader) => {
-        res.status(200).json(updatedReader);
-      });
-    }
-  });
-};
+const updateReader = (req, res) => updateItem(res, 'reader', req.body, req.params.id);
 
 const getReaderById = (req, res) => {
   const { id } = req.params;
