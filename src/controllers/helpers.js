@@ -47,8 +47,21 @@ const updateItem = (res, model, item, id) => {
   });
 };
 
+const getItemById = (res, model, id) => {
+  const Model = getModel(model);
+
+  return Model.findByPk(id).then((item) => {
+    if (!item) {
+      res.status(404).json(get404Error(model));
+    } else {
+      res.status(200).json(item);
+    }
+  });
+};
+
 module.exports = {
   getAllItems,
   createItem,
   updateItem,
+  getItemById,
 };
