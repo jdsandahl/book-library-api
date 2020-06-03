@@ -61,5 +61,40 @@ describe('/genres', () => {
         expect(newGenreRecord).to.equal(null);
       });
     });
+
+    describe('with genres in the database', () => {
+      let genres;
+
+      beforeEach(async () => {
+        await Genre.destroy({ where: {} });
+
+        genres = await Promise.all([
+          Genre.create({
+            genre: 'Science Fiction',
+          }),
+          Genre.create({
+            genre: 'Fantasy',
+          }),
+          Genre.create({
+            genre: 'Travel',
+          }),
+        ]);
+      });
+
+      describe('GET /genre', () => {
+        it('gets all available genres in the database', async () => {
+          const response = await request(app).get('/genres');
+
+          expect(response.status).to.equal(200);
+          expect(response.body.length).to.equal(3);
+
+          response.body.forEach((genre) => {
+            const expected = genres.find((all) => all.id === genre.id);
+
+            expect(genre.genre).to.equal(expected.genre);
+          });
+        });
+      });
+    });
   });
 });
