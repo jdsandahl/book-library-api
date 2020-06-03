@@ -1,9 +1,10 @@
 /* /src/models/genre */
 module.exports = (sequelize, DataTypes) => {
   const schema = {
-    author: {
+    genre: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         notNull: {
           args: [true],
