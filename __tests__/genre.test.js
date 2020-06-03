@@ -2,6 +2,7 @@ const { expect } = require('chai');
 const request = require('supertest');
 const { Genre } = require('../src/models');
 const app = require('../src/app');
+// const { sends400Error } = require('./test-helper');
 
 describe('/genres', () => {
   before(async () => {
@@ -24,6 +25,19 @@ describe('/genres', () => {
         expect(newGenreRecord.genre).to.equal('Fantasy');
       });
 
+      // replace 400 error tests with this helper version
+      /*
+      it('sends 400 error using helper test', async () => {
+        const TOTAL_EXPECTED_ERRORS = 1;
+        const testGenre = {
+          genre: '',
+        };
+
+        await sends400Error('genres', TOTAL_EXPECTED_ERRORS, testGenre);
+      });
+      */
+
+      // refactor
       it('sends a 400 error if genre is empty', async () => {
         const response = await request(app).post('/genres').send({
           genre: '',
@@ -37,6 +51,7 @@ describe('/genres', () => {
         expect(newGenreRecord).to.equal(null);
       });
 
+      // refactor with helper
       it('sends a 400 error if genre is not provided', async () => {
         const response = await request(app).post('/genres').send({});
         const newGenreRecord = await Genre.findByPk(response.body.id, {
@@ -48,6 +63,7 @@ describe('/genres', () => {
         expect(newGenreRecord).to.equal(null);
       });
 
+      // refactor with helper
       it('sends a 400 error if genre is not unique', async () => {
         const response = await request(app).post('/genres').send({
           genre: 'Fantasy',
