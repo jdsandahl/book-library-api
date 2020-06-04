@@ -111,6 +111,23 @@ describe('/genres', () => {
           });
         });
       });
+
+      describe('GET /genre/:id', () => {
+        it('gets a genre by id', async () => {
+          const genre = genres[0];
+          const response = await request(app).get(`/genres/${genre.id}`);
+
+          expect(response.status).to.equal(200);
+          expect(response.body.genre).to.equal(genre.genre);
+        });
+
+        it('returns a 404 error if the book does not exist', async () => {
+          const response = await request(app).get('/genres/9999');
+
+          expect(response.status).to.equal(404);
+          expect(response.body.error).to.equal('The genre could not be found.');
+        });
+      });
     });
   });
 });
