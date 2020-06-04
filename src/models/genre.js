@@ -1,7 +1,7 @@
 /* /src/models/genre */
 module.exports = (sequelize, DataTypes) => {
   const schema = {
-    genre: {
+    type: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,

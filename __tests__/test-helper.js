@@ -5,16 +5,16 @@ const app = require('../src/app');
 
 const getModel = (model) => {
   const models = {
-    books: Book,
-    readers: Reader,
-    genres: Genre,
+    book: Book,
+    reader: Reader,
+    genre: Genre,
   };
   return models[model];
 };
 
 const sends400Error = async (model, TOTAL_EXPECTED_ERRORS, testItem) => {
   const Model = await getModel(model);
-  const response = await request(app).post(`/${model}`).send(testItem);
+  const response = await request(app).post(`/${model}s`).send(testItem);
   const newRecord = await Model.findByPk(response.body.id, { raw: true });
 
   expect(response.status).to.equal(400);

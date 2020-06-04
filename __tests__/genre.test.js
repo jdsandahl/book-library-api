@@ -14,15 +14,15 @@ describe('/genres', () => {
     describe('POST /genres', () => {
       it('creates a new genre in the database', async () => {
         const response = await request(app).post('/genres').send({
-          genre: 'Fantasy',
+          type: 'Fantasy',
         });
         const newGenreRecord = await Genre.findByPk(response.body.id, {
           raw: true,
         });
 
         expect(response.status).to.equal(201);
-        expect(response.body.genre).to.equal('Fantasy');
-        expect(newGenreRecord.genre).to.equal('Fantasy');
+        expect(response.body.type).to.equal('Fantasy');
+        expect(newGenreRecord.type).to.equal('Fantasy');
       });
 
       // replace 400 error tests with this helper version
@@ -30,17 +30,17 @@ describe('/genres', () => {
       it('sends 400 error using helper test', async () => {
         const TOTAL_EXPECTED_ERRORS = 1;
         const testGenre = {
-          genre: '',
+          type: '',
         };
 
-        await sends400Error('genres', TOTAL_EXPECTED_ERRORS, testGenre);
+        await sends400Error('genre', TOTAL_EXPECTED_ERRORS, testGenre);
       });
       */
 
       // refactor
       it('sends a 400 error if genre is empty', async () => {
         const response = await request(app).post('/genres').send({
-          genre: '',
+          type: '',
         });
         const newGenreRecord = await Genre.findByPk(response.body.id, {
           raw: true,
@@ -66,7 +66,7 @@ describe('/genres', () => {
       // refactor with helper
       it('sends a 400 error if genre is not unique', async () => {
         const response = await request(app).post('/genres').send({
-          genre: 'Fantasy',
+          type: 'Fantasy',
         });
         const newGenreRecord = await Genre.findByPk(response.body.id, {
           raw: true,
@@ -86,18 +86,18 @@ describe('/genres', () => {
 
         genres = await Promise.all([
           Genre.create({
-            genre: 'Science Fiction',
+            type: 'Science Fiction',
           }),
           Genre.create({
-            genre: 'Fantasy',
+            type: 'Fantasy',
           }),
           Genre.create({
-            genre: 'Travel',
+            type: 'Travel',
           }),
         ]);
       });
 
-      describe('GET /genre', () => {
+      describe('GET /genres', () => {
         it('gets all available genres in the database', async () => {
           const response = await request(app).get('/genres');
 
@@ -107,18 +107,18 @@ describe('/genres', () => {
           response.body.forEach((genre) => {
             const expected = genres.find((all) => all.id === genre.id);
 
-            expect(genre.genre).to.equal(expected.genre);
+            expect(genre.type).to.equal(expected.type);
           });
         });
       });
 
-      describe('GET /genre/:id', () => {
+      describe('GET /genres/:id', () => {
         it('gets a genre by id', async () => {
           const genre = genres[0];
           const response = await request(app).get(`/genres/${genre.id}`);
 
           expect(response.status).to.equal(200);
-          expect(response.body.genre).to.equal(genre.genre);
+          expect(response.body.type).to.equal(genre.type);
         });
 
         it('returns a 404 error if the book does not exist', async () => {
@@ -127,6 +127,31 @@ describe('/genres', () => {
           expect(response.status).to.equal(404);
           expect(response.body.error).to.equal('The genre could not be found.');
         });
+      });
+
+      describe('PATCH /genres/:id', () => {
+        it('updates genre by id', async () => {
+          const genre = genres[0];
+          const response = await request(app)
+            .patch(`/genres/${genre.id}`)
+            .send({ type: 'Adventure' });
+
+          const updatedGenreRecord = await Genre.findByPk(genre.id, {
+            raw: true,
+          });
+
+          expect(response.status).to.equal(200);
+          expect(updatedGenreRecord.type).to.equal('Adventure');
+        });
+      });
+
+      it('returns 404 if the genre does not exist', async () => {
+        const response = await request(app)
+          .patch(`/genres/9999`)
+          .send({ type: 'Adventure' });
+
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The genre could not be found.');
       });
     });
   });
