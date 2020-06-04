@@ -143,15 +143,32 @@ describe('/genres', () => {
           expect(response.status).to.equal(200);
           expect(updatedGenreRecord.type).to.equal('Adventure');
         });
+
+        it('returns 404 if the genre does not exist', async () => {
+          const response = await request(app)
+            .patch(`/genres/9999`)
+            .send({ type: 'Adventure' });
+
+          expect(response.status).to.equal(404);
+          expect(response.body.error).to.equal('The genre could not be found.');
+        });
       });
 
-      it('returns 404 if the genre does not exist', async () => {
-        const response = await request(app)
-          .patch(`/genres/9999`)
-          .send({ type: 'Adventure' });
+      describe('DELETE /genres/:id', () => {
+        it('deletes a genre by id', async () => {
+          const genre = genres[0];
+          const response = await request(app).delete(`/genres/${genre.id}`);
+          const deletedGenre = await Genre.findByPk(genre.id, { raw: true });
 
-        expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('The genre could not be found.');
+          expect(response.status).to.equal(204);
+          expect(deletedGenre).to.equal(null);
+        });
+
+        it('returns a 404 if the genre does not exist', async () => {
+          const response = await request(app).delete('/genres/9999');
+          expect(response.status).to.equal(404);
+          expect(response.body.error).to.equal('The genre could not be found.');
+        });
       });
     });
   });
