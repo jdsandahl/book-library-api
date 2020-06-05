@@ -12,9 +12,9 @@ const getModel = (model) => {
   return models[model];
 };
 
-const sends400Error = async (model, TOTAL_EXPECTED_ERRORS, testItem) => {
+const sends400Error = async (model, route, TOTAL_EXPECTED_ERRORS, testCase) => {
   const Model = await getModel(model);
-  const response = await request(app).post(`/${model}s`).send(testItem);
+  const response = await request(app).post(route).send(testCase);
   const newRecord = await Model.findByPk(response.body.id, { raw: true });
 
   expect(response.status).to.equal(400);

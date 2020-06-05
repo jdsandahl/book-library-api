@@ -29,11 +29,16 @@ describe('/genres', () => {
       /*
       it('sends 400 error using helper test', async () => {
         const TOTAL_EXPECTED_ERRORS = 1;
-        const testGenre = {
+        const testCase = {
           type: '',
         };
 
-        await sends400Error('genre', TOTAL_EXPECTED_ERRORS, testGenre);
+        await sends400Error(
+          'genre',
+          '/genres',
+          TOTAL_EXPECTED_ERRORS,
+          testCase
+        );
       });
       */
 
