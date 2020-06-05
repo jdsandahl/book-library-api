@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         notEmpty: {
           args: [true],
-          msg: 'The author name must not be blank.',
+          msg: 'The genre type must not be blank.',
         },
       },
     },

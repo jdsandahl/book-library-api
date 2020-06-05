@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const request = require('supertest');
 const { Genre } = require('../src/models');
 const app = require('../src/app');
-// const { sends400Error } = require('./test-helper');
+//const { sends400Error } = require('./test-helper');
 
 describe('/genres', () => {
   before(async () => {
@@ -27,18 +27,15 @@ describe('/genres', () => {
 
       // replace 400 error tests with this helper version
       /*
-      it('sends 400 error using helper test', async () => {
-        const TOTAL_EXPECTED_ERRORS = 1;
-        const testCase = {
-          type: '',
+      it('sends 400 error if genre is empty - using helper', async () => {
+        const test = {
+          model: 'genre',
+          route: '/genres',
+          type: 'POST',
+          EXPECTED_ERRORS: 1,
+          req: { type: '' },
         };
-
-        await sends400Error(
-          'genre',
-          '/genres',
-          TOTAL_EXPECTED_ERRORS,
-          testCase
-        );
+        await sends400Error(test);
       });
       */
 
