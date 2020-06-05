@@ -152,6 +152,19 @@ describe('/genres', () => {
           expect(response.status).to.equal(404);
           expect(response.body.error).to.equal('The genre could not be found.');
         });
+
+        it('sends a 400 error if genre is not unique', async () => {
+          const genre = genres[0];
+          const response = await request(app)
+            .patch(`/genres/${genre.id}`)
+            .send({
+              type: 'Fantasy',
+            });
+
+          expect(response.status).to.equal(400);
+          expect(response.body.errors.length).to.equal(1);
+          expect(genre.type).to.equal('Science Fiction');
+        });
       });
 
       describe('DELETE /genres/:id', () => {

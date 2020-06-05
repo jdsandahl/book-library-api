@@ -24,7 +24,9 @@ const getAllItems = (res, model) => {
   const Model = getModel(model);
 
   Model.findAll().then((items) => {
-    const itemsWithoutPassword = items.map((item) => removePassword(item.dataValues)); 
+    const itemsWithoutPassword = items.map((item) =>
+      removePassword(item.dataValues)
+    );
     res.status(200).json(itemsWithoutPassword);
   });
 };
@@ -34,7 +36,7 @@ const createItem = (res, model, item) => {
 
   Model.create(item)
     .then((newItemCreated) => {
-      const itemWithoutPassword = removePassword(newItemCreated.dataValues);  
+      const itemWithoutPassword = removePassword(newItemCreated.dataValues);
       res.status(201).json(itemWithoutPassword);
     })
     .catch((error) => {
@@ -46,16 +48,21 @@ const createItem = (res, model, item) => {
 const updateItem = (res, model, item, id) => {
   const Model = getModel(model);
 
-  Model.update(item, { where: { id } }).then(([fieldsUpdated]) => {
-    if (!fieldsUpdated) {
-      res.status(404).json(get404Error(model));
-    } else {
-      Model.findByPk(id).then((updatedItem) => {
-        const itemWithoutPassword = removePassword(updatedItem.dataValues);  
-        res.status(200).json(itemWithoutPassword);
-      });
-    }
-  });
+  Model.update(item, { where: { id } })
+    .then(([fieldsUpdated]) => {
+      if (!fieldsUpdated) {
+        res.status(404).json(get404Error(model));
+      } else {
+        Model.findByPk(id).then((updatedItem) => {
+          const itemWithoutPassword = removePassword(updatedItem.dataValues);
+          res.status(200).json(itemWithoutPassword);
+        });
+      }
+    })
+    .catch((error) => {
+      const errorMessages = error.errors.map((e) => e.message);
+      res.status(400).json({ errors: errorMessages });
+    });
 };
 
 const getItemById = (res, model, id) => {
@@ -65,7 +72,7 @@ const getItemById = (res, model, id) => {
     if (!item) {
       res.status(404).json(get404Error(model));
     } else {
-      const itemWithoutPassword = removePassword(item.dataValues);  
+      const itemWithoutPassword = removePassword(item.dataValues);
       res.status(200).json(itemWithoutPassword);
     }
   });
