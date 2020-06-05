@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const request = require('supertest');
-const { Book } = require('../src/models');
+const { Book, Genre } = require('../src/models');
 const app = require('../src/app');
 
 describe('/books', () => {
@@ -12,7 +12,6 @@ describe('/books', () => {
         const response = await request(app).post('/books').send({
           title: 'Test Book Name',
           author: 'Test author name',
-          genre: 'Test genre',
           isbn: 'Test ISBN',
         });
         const newBookRecord = await Book.findByPk(response.body.id, {
@@ -21,9 +20,10 @@ describe('/books', () => {
 
         expect(response.status).to.equal(201);
         expect(response.body.title).to.equal('Test Book Name');
+        expect(response.body.author).to.equal('Test author name');
+        expect(response.body.isbn).to.equal('Test ISBN');
         expect(newBookRecord.title).to.equal('Test Book Name');
         expect(newBookRecord.author).to.equal('Test author name');
-        expect(newBookRecord.genre).to.equal('Test genre');
         expect(newBookRecord.isbn).to.equal('Test ISBN');
       });
     });
@@ -32,7 +32,6 @@ describe('/books', () => {
       const response = await request(app).post('/books').send({
         title: '',
         author: '',
-        genre: 'Fantasy',
         isbn: '1231-1231',
       });
       const newBookRecord = await Book.findByPk(response.body.id, {
@@ -46,7 +45,6 @@ describe('/books', () => {
 
     it('sends a 400 error if title, or author are not provided', async () => {
       const response = await request(app).post('/books').send({
-        genre: 'Fantasy',
         isbn: '1231-1231',
       });
       const newBookRecord = await Book.findByPk(response.body.id, {
@@ -69,19 +67,16 @@ describe('/books', () => {
         Book.create({
           title: 'The First Book',
           author: 'First Author',
-          genre: 'First',
           isbn: '1A-111',
         }),
         Book.create({
           title: 'The Second Book',
           author: 'Second Author',
-          genre: 'Second',
           isbn: '2B-222',
         }),
         Book.create({
           title: 'The Third Book',
           author: 'Third Author',
-          genre: 'Third',
           isbn: '3C-333',
         }),
       ]);
@@ -90,7 +85,6 @@ describe('/books', () => {
     describe('GET /books', () => {
       it('gets all book records', async () => {
         const response = await request(app).get('/books');
-
         expect(response.status).to.equal(200);
         expect(response.body.length).to.equal(3);
 
@@ -99,7 +93,6 @@ describe('/books', () => {
 
           expect(book.title).to.equal(expected.title);
           expect(book.author).to.equal(expected.author);
-          expect(book.genre).to.equal(expected.genre);
           expect(book.isbn).to.equal(expected.isbn);
         });
       });
@@ -113,7 +106,6 @@ describe('/books', () => {
         expect(response.status).to.equal(200);
         expect(response.body.title).to.equal(book.title);
         expect(response.body.author).to.equal(book.author);
-        expect(response.body.genre).to.equal(book.genre);
         expect(response.body.isbn).to.equal(book.isbn);
       });
 

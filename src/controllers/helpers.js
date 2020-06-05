@@ -18,12 +18,20 @@ const removePassword = (obj) => {
   return obj;
 };
 
+const getOptions = (model) => {
+  if (model === 'book') return { include: Genre };
+  if (model === 'genre') return { include: Book };
+
+  return {};
+};
+
 // Helper functions to be exported
 
 const getAllItems = (res, model) => {
   const Model = getModel(model);
+  const options = getOptions(model);
 
-  Model.findAll().then((items) => {
+  Model.findAll({ ...options }).then((items) => {
     const itemsWithoutPassword = items.map((item) =>
       removePassword(item.dataValues)
     );
@@ -67,8 +75,9 @@ const updateItem = (res, model, item, id) => {
 
 const getItemById = (res, model, id) => {
   const Model = getModel(model);
+  const options = getOptions(model);
 
-  Model.findByPk(id).then((item) => {
+  Model.findByPk(id, { ...options }).then((item) => {
     if (!item) {
       res.status(404).json(get404Error(model));
     } else {
