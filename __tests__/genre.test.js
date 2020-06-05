@@ -146,7 +146,7 @@ describe('/genres', () => {
 
         it('returns 404 if the genre does not exist', async () => {
           const response = await request(app)
-            .patch(`/genres/9999`)
+            .patch('/genres/9999')
             .send({ type: 'Adventure' });
 
           expect(response.status).to.equal(404);
