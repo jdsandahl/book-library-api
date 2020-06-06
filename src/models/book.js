@@ -15,20 +15,6 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    author: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          args: [true],
-          msg: 'Please provide the author name.',
-        },
-        notEmpty: {
-          args: [true],
-          msg: 'The author name must not be blank.',
-        },
-      },
-    },
     isbn: {
       type: DataTypes.STRING,
     },

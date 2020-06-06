@@ -5,13 +5,13 @@ const app = require('../src/app');
 
 describe('/authors', () => {
   before(async () => {
+    await Author.sequelize.sync();
     await Author.destroy({ where: {} });
-    Author.sequelize.sync();
   });
 
   describe('with no authors in the database', () => {
     describe('POST /authors', () => {
-      xit('creates a new author in the database', async () => {
+      it('creates a new author in the database', async () => {
         const response = await request(app).post('/authors').send({
           name: 'J. R. R. Tolkien',
         });
@@ -20,11 +20,11 @@ describe('/authors', () => {
         });
 
         expect(response.status).to.equal(201);
-        expect(response.body.type).to.equal('J. R. R. Tolkien');
-        expect(newAuthorRecord.type).to.equal('J. R. R. Tolkien');
+        expect(response.body.name).to.equal('J. R. R. Tolkien');
+        expect(newAuthorRecord.name).to.equal('J. R. R. Tolkien');
       });
 
-      xit('sends a 400 error if author is empty', async () => {
+      it('sends a 400 error if author is empty', async () => {
         const response = await request(app).post('/authors').send({
           name: '',
         });
@@ -37,7 +37,7 @@ describe('/authors', () => {
         expect(newAuthorRecord).to.equal(null);
       });
 
-      xit('sends a 400 error if author is not provided', async () => {
+      it('sends a 400 error if author is not provided', async () => {
         const response = await request(app).post('/genres').send({});
         const newAuthorRecord = await Author.findByPk(response.body.id, {
           raw: true,
@@ -48,7 +48,7 @@ describe('/authors', () => {
         expect(newAuthorRecord).to.equal(null);
       });
 
-      xit('sends a 400 error if author is not unique', async () => {
+      it('sends a 400 error if author is not unique', async () => {
         const response = await request(app).post('/genres').send({
           name: 'J. R. R. Tolkien',
         });
@@ -82,7 +82,7 @@ describe('/authors', () => {
       });
 
       describe('GET /authors', () => {
-        xit('gets all available authors in the database', async () => {
+        it('gets all available authors in the database', async () => {
           const response = await request(app).get('/authors');
 
           expect(response.status).to.equal(200);
@@ -91,21 +91,21 @@ describe('/authors', () => {
           response.body.forEach((author) => {
             const expected = authors.find((all) => all.id === author.id);
 
-            expect(author.type).to.equal(expected.type);
+            expect(author.name).to.equal(expected.name);
           });
         });
       });
 
       describe('GET /authors/:id', () => {
-        xit('gets a author by id', async () => {
+        it('gets a author by id', async () => {
           const author = authors[0];
           const response = await request(app).get(`/authors/${author.id}`);
 
           expect(response.status).to.equal(200);
-          expect(response.body.type).to.equal(author.type);
+          expect(response.body.name).to.equal(author.name);
         });
 
-        xit('returns a 404 error if the author does not exist', async () => {
+        it('returns a 404 error if the author does not exist', async () => {
           const response = await request(app).get('/authors/9999');
 
           expect(response.status).to.equal(404);
@@ -114,10 +114,10 @@ describe('/authors', () => {
       });
 
       describe('PATCH /authors/:id', () => {
-        xit('updates author by id', async () => {
+        it('updates author by id', async () => {
           const author = authors[0];
           const response = await request(app)
-            .patch(`/author/${author.id}`)
+            .patch(`/authors/${author.id}`)
             .send({ name: 'J. K. Rowling' });
 
           const updatedAuthorRecord = await Author.findByPk(author.id, {
@@ -125,10 +125,10 @@ describe('/authors', () => {
           });
 
           expect(response.status).to.equal(200);
-          expect(updatedAuthorRecord.type).to.equal('J. K. Rowling');
+          expect(updatedAuthorRecord.name).to.equal('J. K. Rowling');
         });
 
-        xit('returns 404 if the author does not exist', async () => {
+        it('returns 404 if the author does not exist', async () => {
           const response = await request(app)
             .patch('/authors/9999')
             .send({ name: 'J. K. Rowling' });
@@ -137,22 +137,22 @@ describe('/authors', () => {
           expect(response.body.error).to.equal('The author could not be found.');
         });
 
-        xit('sends a 400 error if author is not unique', async () => {
+        it('sends a 400 error if author is not unique', async () => {
           const author = authors[0];
           const response = await request(app)
             .patch(`/authors/${author.id}`)
             .send({
-              type: 'Bram Stoker',
+              name: 'Bram Stoker',
             });
 
           expect(response.status).to.equal(400);
           expect(response.body.errors.length).to.equal(1);
-          expect(author.type).to.equal('J. R. R. Tolkien');
+          expect(author.name).to.equal('J. R. R. Tolkien');
         });
       });
 
       describe('DELETE /authors/:id', () => {
-        xit('deletes a author by id', async () => {
+        it('deletes a author by id', async () => {
           const author = authors[0];
           const response = await request(app).delete(`/authors/${author.id}`);
           const deletedAuthor = await Author.findByPk(author.id, { raw: true });
@@ -161,7 +161,7 @@ describe('/authors', () => {
           expect(deletedAuthor).to.equal(null);
         });
 
-        xit('returns a 404 if the author does not exist', async () => {
+        it('returns a 404 if the author does not exist', async () => {
           const response = await request(app).delete('/authors/9999');
           expect(response.status).to.equal(404);
           expect(response.body.error).to.equal('The author could not be found.');
