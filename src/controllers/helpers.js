@@ -1,9 +1,10 @@
-const { Book, Reader, Genre } = require('../models');
+const { Author, Book, Reader, Genre } = require('../models');
 
 const get404Error = (model) => ({ error: `The ${model} could not be found.` });
 
 const getModel = (model) => {
   const models = {
+    author: Author,
     book: Book,
     reader: Reader,
     genre: Genre,
@@ -19,8 +20,9 @@ const removePassword = (obj) => {
 };
 
 const getOptions = (model) => {
-  if (model === 'book') return { include: Genre };
+  if (model === 'book') return { include: [{ model: Genre }, { model: Author }] };
   if (model === 'genre') return { include: Book };
+  if (model === 'author') return { include: Book};
 
   return {};
 };

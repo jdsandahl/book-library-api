@@ -11,7 +11,6 @@ describe('/books', () => {
       it('creates a new book in the database', async () => {
         const response = await request(app).post('/books').send({
           title: 'Test Book Name',
-          author: 'Test author name',
           isbn: 'Test ISBN',
         });
         const newBookRecord = await Book.findByPk(response.body.id, {
@@ -20,18 +19,15 @@ describe('/books', () => {
 
         expect(response.status).to.equal(201);
         expect(response.body.title).to.equal('Test Book Name');
-        expect(response.body.author).to.equal('Test author name');
         expect(response.body.isbn).to.equal('Test ISBN');
         expect(newBookRecord.title).to.equal('Test Book Name');
-        expect(newBookRecord.author).to.equal('Test author name');
         expect(newBookRecord.isbn).to.equal('Test ISBN');
       });
     });
 
-    it('sends a 400 error if title, or author is an empty string', async () => {
+    it('sends a 400 error if title is an empty string', async () => {
       const response = await request(app).post('/books').send({
         title: '',
-        author: '',
         isbn: '1231-1231',
       });
       const newBookRecord = await Book.findByPk(response.body.id, {
@@ -39,11 +35,11 @@ describe('/books', () => {
       });
 
       expect(response.status).to.equal(400);
-      expect(response.body.errors.length).to.equal(2);
+      expect(response.body.errors.length).to.equal(1);
       expect(newBookRecord).to.equal(null);
     });
 
-    it('sends a 400 error if title, or author are not provided', async () => {
+    it('sends a 400 error if title, is not provided', async () => {
       const response = await request(app).post('/books').send({
         isbn: '1231-1231',
       });
@@ -52,7 +48,7 @@ describe('/books', () => {
       });
 
       expect(response.status).to.equal(400);
-      expect(response.body.errors.length).to.equal(2);
+      expect(response.body.errors.length).to.equal(1);
       expect(newBookRecord).to.equal(null);
     });
   });
@@ -66,17 +62,14 @@ describe('/books', () => {
       books = await Promise.all([
         Book.create({
           title: 'The First Book',
-          author: 'First Author',
           isbn: '1A-111',
         }),
         Book.create({
           title: 'The Second Book',
-          author: 'Second Author',
           isbn: '2B-222',
         }),
         Book.create({
           title: 'The Third Book',
-          author: 'Third Author',
           isbn: '3C-333',
         }),
       ]);
@@ -92,7 +85,6 @@ describe('/books', () => {
           const expected = books.find((all) => all.id === book.id);
 
           expect(book.title).to.equal(expected.title);
-          expect(book.author).to.equal(expected.author);
           expect(book.isbn).to.equal(expected.isbn);
         });
       });
@@ -105,7 +97,6 @@ describe('/books', () => {
 
         expect(response.status).to.equal(200);
         expect(response.body.title).to.equal(book.title);
-        expect(response.body.author).to.equal(book.author);
         expect(response.body.isbn).to.equal(book.isbn);
       });
 
